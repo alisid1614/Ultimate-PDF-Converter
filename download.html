@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download PDF | Premium PDF</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <h1>Premium<span>PDF</span></h1>
+            </div>
+            <nav>
+                <span id="username">User</span>
+                <button id="logoutBtn" class="btn logout-btn">Logout</button>
+            </nav>
+        </header>
+
+        <main class="download-page">
+            <div class="download-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2>Conversion Complete!</h2>
+                <p>Your file has been successfully converted to PDF</p>
+            </div>
+
+            <div class="download-card">
+                <div class="file-info">
+                    <div class="file-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="file-details">
+                        <h3>converted_file.pdf</h3>
+                        <p>2.4 MB • PDF Document</p>
+                    </div>
+                </div>
+
+                <div class="download-options">
+                    <h3>Download Options</h3>
+                    <div class="options-grid">
+                        <button class="option-btn" id="downloadBtn">
+                            <i class="fas fa-download"></i>
+                            <span>Download</span>
+                        </button>
+                        <button class="option-btn">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email</span>
+                        </button>
+                        <button class="option-btn">
+                            <i class="fab fa-google-drive"></i>
+                            <span>Google Drive</span>
+                        </button>
+                        <button class="option-btn">
+                            <i class="fab fa-dropbox"></i>
+                            <span>Dropbox</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="tools.html" class="btn secondary-btn">Convert Another File</a>
+                <a href="tools.html" class="btn primary-btn">Back to Tools</a>
+            </div>
+        </main>
+    </div>
+    <script src="auth.js"></script>
+    <script>
+        // Download button functionality
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            // In a real app, this would download the file
+            alert('Download would start here in a real application');
+        });
+    </script>
+</body>
+</html>
