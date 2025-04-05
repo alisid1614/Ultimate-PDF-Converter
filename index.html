@@ -1,26 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Premium PDF Tool</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium PDF Converter | Text, Image, Office to PDF</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h1 class="title">🧰 Premium PDF Conversion Tool</h1>
-    <div class="loader" id="loader"></div>
-    <input type="file" id="fileInput" style="display: none;" />
-    <button onclick="convertTextToPDF()">📄 Text to PDF</button>
-    <button onclick="convertImageToPDF()">🖼️ Image to PDF</button>
-    <button onclick="convertWordToPDF()">📝 Word to PDF</button>
-    <button onclick="convertExcelToPDF()">📊 Excel to PDF</button>
-    <button onclick="convertPptToPDF()">📽️ PowerPoint to PDF</button>
-    <button onclick="editPDF()">🛠️ Advanced PDF Editing</button>
-  </div>
+    <!-- Loading Animation -->
+    <div class="loader-wrapper">
+        <div class="loader">
+            <div class="loader-inner">
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <script src="script.js"></script>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <h1>Premium<span>PDF</span></h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#tools">Tools</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn login-btn">Login</button>
+                <button class="btn signup-btn">Sign Up</button>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Convert Any File to Professional PDF</h2>
+                <p>High-quality PDF conversion with advanced editing tools. Fast, secure, and easy to use.</p>
+                <div class="cta-buttons">
+                    <button class="btn primary-btn">Start Converting</button>
+                    <button class="btn secondary-btn">Learn More</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://via.placeholder.com/600x400" alt="PDF Conversion Illustration" class="animated-image">
+            </div>
+        </section>
+
+        <!-- Tools Section -->
+        <section class="tools-section" id="tools">
+            <h2 class="section-title">Our Conversion Tools</h2>
+            <div class="tools-grid">
+                <!-- Text to PDF -->
+                <div class="tool-card" data-tool="text">
+                    <div class="tool-icon">
+                        <i class="fas fa-font"></i>
+                    </div>
+                    <h3>Text to PDF</h3>
+                    <p>Convert plain text or rich text documents to PDF format with formatting preserved.</p>
+                    <button class="btn tool-btn">Use Tool</button>
+                </div>
+
+                <!-- Image to PDF -->
+                <div class="tool-card" data-tool="image">
+                    <div class="tool-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3>Image to PDF</h3>
+                    <p>Convert JPG, PNG, GIF and other image formats to high-quality PDF files.</p>
+                    <button class="btn tool-btn">Use Tool</button>
+                </div>
+
+                <!-- Word to PDF -->
+                <div class="tool-card" data-tool="word">
+                    <div class="tool-icon">
+                        <i class="fas fa-file-word"></i>
+                    </div>
+                    <h3>Word to PDF</h3>
+                    <p>Convert DOC, DOCX files to PDF while maintaining layout and formatting.</p>
+                    <button class="btn tool-btn">Use Tool</button>
+                </div>
+
+                <!-- Excel to PDF -->
+                <div class="tool-card" data-tool="excel">
+                    <div class="tool-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h3>Excel to PDF</h3>
+                    <p>Convert XLS, XLSX spreadsheets to PDF with tables and charts intact.</p>
+                    <button class="btn tool-btn">Use Tool</button>
+                </div>
+
+                <!-- PowerPoint to PDF -->
+                <div class="tool-card" data-tool="powerpoint">
+                    <div class="tool-icon">
+                        <i class="fas fa-file-powerpoint"></i>
+                    </div>
+                    <h3>PowerPoint to PDF</h3>
+                    <p>Convert PPT, PPTX presentations to PDF slides with animations as static images.</p>
+                    <button class="btn tool-btn">Use Tool</button>
+                </div>
+
+                <!-- Advanced Tools -->
+                <div class="tool-card" data-tool="advanced">
+                    <div class="tool-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3>Advanced Tools</h3>
+                    <p>Merge, split, compress, and edit PDFs with our powerful advanced tools.</p>
+                    <button class="btn tool-btn">Use Tool</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conversion Area -->
+        <section class="conversion-area">
+            <div class="conversion-container">
+                <div class="conversion-header">
+                    <h3>Convert Your Files</h3>
+                    <div class="file-drop-area" id="dropArea">
+                        <span class="file-msg">Drag & drop files here or click to browse</span>
+                        <input class="file-input" type="file" id="fileInput" multiple>
+                    </div>
+                </div>
+
+                <div class="conversion-options">
+                    <div class="format-selector">
+                        <label for="outputFormat">Output Format:</label>
+                        <select id="outputFormat">
+                            <option value="pdf">PDF</option>
+                            <option value="pdf-a">PDF/A (Archival)</option>
+                            <option value="pdf-ua">PDF/UA (Accessible)</option>
+                            <option value="pdf-x">PDF/X (Print)</option>
+                        </select>
+                    </div>
+
+                    <div class="quality-selector">
+                        <label for="quality">Quality:</label>
+                        <select id="quality">
+                            <option value="high">High (Best Quality)</option>
+                            <option value="medium" selected>Medium (Balanced)</option>
+                            <option value="low">Low (Smaller File)</option>
+                        </select>
+                    </div>
+
+                    <div class="advanced-options-toggle">
+                        <input type="checkbox" id="advancedToggle">
+                        <label for="advancedToggle">Show Advanced Options</label>
+                    </div>
+
+                    <div class="advanced-options" id="advancedOptions">
+                        <div class="option-group">
+                            <h4>Page Layout</h4>
+                            <div class="option-row">
+                                <label for="pageSize">Page Size:</label>
+                                <select id="pageSize">
+                                    <option value="a4">A4</option>
+                                    <option value="letter">Letter</option>
+                                    <option value="legal">Legal</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                            </div>
+                            <div class="option-row">
+                                <label for="orientation">Orientation:</label>
+                                <select id="orientation">
+                                    <option value="portrait">Portrait</option>
+                                    <option value="landscape">Landscape</option>
+                                </select>
+                            </div>
+                            <div class="option-row">
+                                <label for="margins">Margins:</label>
+                                <select id="margins">
+                                    <option value="normal">Normal</option>
+                                    <option value="narrow">Narrow</option>
+                                    <option value="wide">Wide</option>
+                                    <option value="none">None</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="option-group">
+                            <h4>Security</h4>
+                            <div class="option-row">
+                                <input type="checkbox" id="enablePassword">
+                                <label for="enablePassword">Password Protect PDF</label>
+                            </div>
+                            <div class="option-row password-fields">
+                                <label for="password">Password:</label>
+                                <input type="password" id="password">
+                                <label for="confirmPassword">Confirm:</label>
+                                <input type="password" id="confirmPassword">
+                            </div>
+                            <div class="option-row">
+                                <input type="checkbox" id="restrictEditing">
+                                <label for="restrictEditing">Restrict Editing</label>
+                            </div>
+                        </div>
+
+                        <div class="option-group">
+                            <h4>Metadata</h4>
+                            <div class="option-row">
+                                <label for="title">Title:</label>
+                                <input type="text" id="title" placeholder="Document title">
+                            </div>
+                            <div class="option-row">
+                                <label for="author">Author:</label>
+                                <input type="text" id="author" placeholder="Author name">
+                            </div>
+                            <div class="option-row">
+                                <label for="keywords">Keywords:</label>
+                                <input type="text" id="keywords" placeholder="Comma separated keywords">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="conversion-actions">
+                    <button class="btn convert-btn" id="convertBtn">
+                        <i class="fas fa-sync-alt"></i> Convert Now
+                    </button>
+                    <button class="btn clear-btn" id="clearBtn">
+                        <i class="fas fa-trash-alt"></i> Clear All
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-area" id="resultsArea">
+                <h3>Conversion Results</h3>
+                <div class="results-placeholder">
+                    <i class="fas fa-cloud-download-alt"></i>
+                    <p>Your converted files will appear here</p>
+                </div>
+                <div class="results-list" id="resultsList"></div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <h2 class="section-title">Premium Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Secure Processing</h3>
+                    <p>All files are processed securely in your browser. We don't upload your documents to any server.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3>Fast Conversion</h3>
+                    <p>Optimized algorithms provide lightning-fast conversion without quality loss.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Advanced Options</h3>
+                    <p>Customize output with page layout, quality settings, and security options.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Works perfectly on all devices from desktop to smartphone.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <h3>No Limits</h3>
+                    <p>Convert as many files as you want with no size restrictions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-adjust"></i>
+                    </div>
+                    <h3>Dark Mode</h3>
+                    <p>Eye-friendly dark theme available for comfortable night-time use.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section about">
+                    <div class="logo">
+                        <i class="fas fa-file-pdf"></i>
+                        <h3>Premium<span>PDF</span></h3>
+                    </div>
+                    <p>The ultimate PDF conversion tool with advanced features and premium quality output.</p>
+                    <div class="socials">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#tools">Tools</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> support@premiumpdf.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 PDF Street, Digital City</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 PremiumPDF. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Tool Modals -->
+    <div class="modal" id="textToPdfModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Text to PDF Converter</h3>
+            <div class="modal-body">
+                <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+                <div class="text-options">
+                    <div class="option-group">
+                        <label for="textFont">Font:</label>
+                        <select id="textFont">
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Verdana">Verdana</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="textSize">Size:</label>
+                        <select id="textSize">
+                            <option value="10">10pt</option>
+                            <option value="12" selected>12pt</option>
+                            <option value="14">14pt</option>
+                            <option value="16">16pt</option>
+                            <option value="18">18pt</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <button id="boldText" class="format-btn"><i class="fas fa-bold"></i></button>
+                        <button id="italicText" class="format-btn"><i class="fas fa-italic"></i></button>
+                        <button id="underlineText" class="format-btn"><i class="fas fa-underline"></i></button>
+                    </div>
+                </div>
+                <button class="btn convert-btn" id="convertTextBtn">Convert to PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Similar modals for other tools would go here -->
+    <!-- Image to PDF, Word to PDF, Excel to PDF, PowerPoint to PDF modals -->
+
+    <script src="script.js"></script>
 </body>
 </html>
