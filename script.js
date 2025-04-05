@@ -1,89 +1,65 @@
-// ===== Global Variables =====
-let selectedFile = null;
-
-// ===== Modal Functions =====
-function openModal(modalType) {
-    closeModal();
-    document.getElementById(`${modalType}-modal`).style.display = 'flex';
+function showLoader() {
+  document.getElementById("loader").style.display = "block";
+  setTimeout(() => {
+    document.getElementById("loader").style.display = "none";
+  }, 2000);
 }
 
-function closeModal() {
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.style.display = 'none';
-    });
+async function convertTextToPDF() {
+  showLoader();
+  const text = prompt("Enter text to convert to PDF:");
+  if (!text) return;
+  const { PDFDocument } = PDFLib;
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([600, 400]);
+  page.drawText(text, { x: 50, y: 350, size: 20 });
+  const pdfBytes = await pdfDoc.save();
+  downloadPDF(pdfBytes, "text-to-pdf.pdf");
 }
 
-// ===== File Upload Handling =====
-document.querySelectorAll('input[type="file"]').forEach(input => {
-    input.addEventListener('change', function(e) {
-        if (this.files.length > 0) {
-            selectedFile = this.files[0];
-            const uploadBox = this.closest('.file-upload');
-            uploadBox.querySelector('p').textContent = selectedFile.name;
-            uploadBox.style.borderColor = '#6c5ce7';
-        }
-    });
-});
-
-// ===== PDF Conversion Functions =====
-function convertTextToPdf() {
-    const textInput = document.getElementById('text-input');
-    const text = textInput.value || (selectedFile ? readFileAsText(selectedFile) : null);
-    
-    if (!text) {
-        alert("Please enter text or upload a file!");
-        return;
-    }
-
-    generatePDF(text);
-}
-
-function convertImageToPdf() {
-    if (!selectedFile) {
-        alert("Please upload an image first!");
-        return;
-    }
-    
+async function convertImageToPDF() {
+  showLoader();
+  document.getElementById("fileInput").click();
+  document.getElementById("fileInput").onchange = async function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(e) {
-        generatePDF(null, e.target.result);
+    reader.onload = async function (e) {
+      const imageBytes = new Uint8Array(e.target.result);
+      const { PDFDocument } = PDFLib;
+      const pdfDoc = await PDFDocument.create();
+      let img;
+      if (file.type.includes("png")) {
+        img = await pdfDoc.embedPng(imageBytes);
+      } else {
+        img = await pdfDoc.embedJpg(imageBytes);
+      }
+      const page = pdfDoc.addPage([img.width, img.height]);
+      page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+      const pdfBytes = await pdfDoc.save();
+      downloadPDF(pdfBytes, "image-to-pdf.pdf");
     };
-    reader.readAsDataURL(selectedFile);
+    reader.readAsArrayBuffer(file);
+  };
 }
 
-// ===== Core PDF Generation =====
-function generatePDF(text = null, imageData = null) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
-    // Text PDF
-    if (text) {
-        doc.text(text, 10, 10);
-    } 
-    // Image PDF
-    else if (imageData) {
-        doc.addImage(imageData, 'JPEG', 15, 15, 180, 160);
-    }
-    
-    doc.save(`converted-${Date.now()}.pdf`);
-    closeModal();
+function convertWordToPDF() {
+  alert("Word to PDF will be added soon.");
 }
 
-// ===== Helper Functions =====
-function readFileAsText(file) {
-    const reader = new FileReader();
-    reader.readAsText(file);
-    return new Promise((resolve) => {
-        reader.onload = () => resolve(reader.result);
-    });
+function convertExcelToPDF() {
+  alert("Excel to PDF will be added soon.");
 }
 
-// ===== Event Listeners =====
-window.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) closeModal();
-});
+function convertPptToPDF() {
+  alert("PowerPoint to PDF will be added soon.");
+}
 
-// Initialize jsPDF
-window.addEventListener('DOMContentLoaded', () => {
-    console.log("PDF Converter Ready!");
-});
+function editPDF() {
+  alert("Advanced PDF editing is coming soon.");
+}
+
+function downloadPDF(pdfBytes, filename) {
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  saveAs(blob, filename);
+}
