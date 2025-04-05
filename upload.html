@@ -94,3 +94,23 @@
     </script>
 </body>
 </html>
+<!-- Add this script to your existing upload.html -->
+<script>
+    // When files are selected/uploaded
+    function handleFiles(e) {
+        const files = e.target.files;
+        if (files.length) {
+            uploadedFiles = Array.from(files);
+            updateFileMessage(uploadedFiles);
+            showUploadSuccess(`${uploadedFiles.length} file(s) ready for conversion`);
+            proceedBtn.disabled = false;
+            
+            // Store the original file info for the download page
+            const fileInfo = {
+                originalName: uploadedFiles[0].name,
+                type: new URLSearchParams(window.location.search).get('type')
+            };
+            sessionStorage.setItem('uploadedFileInfo', JSON.stringify(fileInfo));
+        }
+    }
+</script>
