@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools | Premium PDF</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <h1>Premium<span>PDF</span></h1>
+            </div>
+            <nav>
+                <span id="username">User</span>
+                <button id="logoutBtn" class="btn logout-btn">Logout</button>
+            </nav>
+        </header>
+
+        <main class="tools-page">
+            <h2>Select Conversion Tool</h2>
+            <div class="tools-grid">
+                <div class="tool-card" data-tool="text">
+                    <div class="tool-icon">
+                        <i class="fas fa-font"></i>
+                    </div>
+                    <h3>Text to PDF</h3>
+                    <p>Convert text documents to PDF format</p>
+                    <a href="upload.html?type=text" class="btn tool-btn">Select</a>
+                </div>
+
+                <div class="tool-card" data-tool="image">
+                    <div class="tool-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3>Image to PDF</h3>
+                    <p>Convert JPG, PNG to PDF</p>
+                    <a href="upload.html?type=image" class="btn tool-btn">Select</a>
+                </div>
+
+                <div class="tool-card" data-tool="word">
+                    <div class="tool-icon">
+                        <i class="fas fa-file-word"></i>
+                    </div>
+                    <h3>Word to PDF</h3>
+                    <p>Convert DOC, DOCX to PDF</p>
+                    <a href="upload.html?type=word" class="btn tool-btn">Select</a>
+                </div>
+
+                <div class="tool-card" data-tool="excel">
+                    <div class="tool-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h3>Excel to PDF</h3>
+                    <p>Convert XLS, XLSX to PDF</p>
+                    <a href="upload.html?type=excel" class="btn tool-btn">Select</a>
+                </div>
+
+                <div class="tool-card" data-tool="powerpoint">
+                    <div class="tool-icon">
+                        <i class="fas fa-file-powerpoint"></i>
+                    </div>
+                    <h3>PowerPoint to PDF</h3>
+                    <p>Convert PPT, PPTX to PDF</p>
+                    <a href="upload.html?type=powerpoint" class="btn tool-btn">Select</a>
+                </div>
+
+                <div class="tool-card" data-tool="merge">
+                    <div class="tool-icon">
+                        <i class="fas fa-object-group"></i>
+                    </div>
+                    <h3>Merge PDF</h3>
+                    <p>Combine multiple PDFs</p>
+                    <a href="upload.html?type=merge" class="btn tool-btn">Select</a>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="auth.js"></script>
+</body>
+</html>
