@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate PDF Converter | Free Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f72585;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo i {
+            margin-right: 15px;
+            color: var(--warning);
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .converter-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .converter-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            animation-fill-mode: backwards;
+        }
+        
+        .converter-card:nth-child(1) { animation-delay: 0.1s; }
+        .converter-card:nth-child(2) { animation-delay: 0.2s; }
+        .converter-card:nth-child(3) { animation-delay: 0.3s; }
+        .converter-card:nth-child(4) { animation-delay: 0.4s; }
+        .converter-card:nth-child(5) { animation-delay: 0.5s; }
+        
+        .converter-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .card-desc {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--warning);
+            transform: rotate(90deg);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .modal-title i {
+            margin-right: 10px;
+        }
+        
+        .file-upload {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--accent);
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        .file-upload i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .file-upload p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .options-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .option-group {
+            margin-bottom: 1rem;
+        }
+        
+        .option-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .option-select, .option-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .option-select:focus, .option-input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .checkbox-input {
+            margin-right: 10px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+        }
+        
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        
+        .progress-bar {
+            width: 80%;
+            max-width: 400px;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .result-modal {
+            text-align: center;
+        }
+        
+        .result-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+            animation: pulse 1s infinite;
+        }
+        
+        .download-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .download-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--dark);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: #666;
+            font-size: 0.9rem;
+            padding: 2rem 0;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .converter-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <span>Ultimate PDF Converter</span>
+            </div>
+            <p class="tagline">Convert any document to PDF with advanced editing options - 100% Free</p>
+        </header>
+        
+        <div class="converter-container">
+            <!-- Text to PDF -->
+            <div class="converter-card" onclick="openModal('text')">
+                <div class="card-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3 class="card-title">Text to PDF</h3>
+                <p class="card-desc">Convert plain text files to professional PDF documents with customizable formatting.</p>
+                <button class="btn">Convert Now</button>
+            </div>
+            
+            <!-- Image to PDF -->
+            <div class="converter-card" onclick="openModal('image')">
+                <div class="card-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+                <h3 class="card-title">Image to PDF</h3>
+                <p class="card-desc">Transform JPG, PNG, or other images into PDF files with adjustable quality settings.</p>
+                <button class="btn">Convert Now</button>
+            </div>
+            
+            <!-- Word to PDF -->
+            <div class="converter-card" onclick="openModal('word')">
+                <div class="card-icon">
+                    <i class="fas fa-file-word"></i>
+                </div>
+                <h3 class="card-title">Word to PDF</h3>
+                <p class="card-desc">Convert DOC/DOCX files to PDF while preserving all formatting and styles.</p>
+                <button class="btn">Convert Now</button>
+            </div>
+            
+            <!-- Excel to PDF -->
+            <div class="converter-card" onclick="openModal('excel')">
+                <div class="card-icon">
+                    <i class="fas fa-file-excel"></i>
+                </div>
+                <h3 class="card-title">Excel to PDF</h3>
+                <p class="card-desc">Convert XLS/XLSX spreadsheets to PDF with options for multi-page or single-page output.</p>
+                <button class="btn">Convert Now</button>
+            </div>
+            
+            <!-- PowerPoint to PDF -->
+            <div class="converter-card" onclick="openModal('powerpoint')">
+                <div class="card-icon">
+                    <i class="fas fa-file-powerpoint"></i>
+                </div>
+                <h3 class="card-title">PowerPoint to PDF</h3>
+                <p class="card-desc">Convert PPT/PPTX presentations to PDF with slide-per-page or handout options.</p>
+                <button class="btn">Convert Now</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Text to PDF Modal -->
+    <div class="modal" id="text-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title"><i class="fas fa-file-alt"></i> Text to PDF Converter</h2>
+            
+            <div class="file-upload" onclick="document.getElementById('text-file').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload text file (.txt) or drag and drop</p>
+                <small>Maximum file size: 10MB</small>
+                <input type="file" id="text-file" class="file-input" accept=".txt">
+            </div>
+            
+            <div class="options-section">
+                <h3 class="section-title"><i class="fas fa-cog"></i> Conversion Options</h3>
+                
+                <div class="option-group">
+                    <label class="option-label">Page Size</label>
+                    <select class="option-select">
+                        <option value="a4">A4 (210 × 297 mm)</option>
+                        <option value="letter">Letter (8.5 × 11 in)</option>
+                        <option value="legal">Legal (8.5 × 14 in)</option>
+                        <option value="a5">A5 (148 × 210 mm)</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">Page Orientation</label>
+                    <select class="option-select">
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">Font Size</label>
+                    <input type="range" class="option-input" min="8" max="24" value="12" step="1">
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">Margins (mm)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" class="option-input" placeholder="Top" value="20" style="flex: 1;">
+                        <input type="number" class="option-input" placeholder="Bottom" value="20" style="flex: 1;">
+                        <input type="number" class="option-input" placeholder="Left" value="20" style="flex: 1;">
+                        <input type="number" class="option-input" placeholder="Right" value="20" style="flex: 1;">
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="text-add-page-numbers" class="checkbox-input" checked>
+                    <label for="text-add-page-numbers">Add page numbers</label>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn" onclick="startConversion('text')">Convert to PDF</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Image to PDF Modal -->
+    <div class="modal" id="image-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title"><i class="fas fa-image"></i> Image to PDF Converter</h2>
+            
+            <div class="file-upload" onclick="document.getElementById('image-file').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload images (JPG, PNG, etc.) or drag and drop</p>
+                <small>Maximum file size: 20MB (multiple files allowed)</small>
+                <input type="file" id="image-file" class="file-input" accept="image/*" multiple>
+            </div>
+            
+            <div class="options-section">
+                <h3 class="section-title"><i class="fas fa-cog"></i> Conversion Options</h3>
+                
+                <div class="option-group">
+                    <label class="option-label">Page Size</label>
+                    <select class="option-select">
+                        <option value="auto">Auto (Match image size)</option>
+                        <option value="a4">A4 (210 × 297 mm)</option>
+                        <option value="letter">Letter (8.5 × 11 in)</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">Image Quality</label>
+                    <select class="option-select">
+                        <option value="high">High (300 DPI)</option>
+                        <option value="medium" selected>Medium (150 DPI)</option>
+                        <option value="low">Low (72 DPI)</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">Image Fit</label>
+                    <select class="option-select">
+                        <option value="fill">Fill Page</option>
+                        <option value="fit" selected>Fit to Page</option>
+                        <option value="original">Original Size</option>
+                    </select>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="image-add-border" class="checkbox-input">
+                    <label for="image-add-border">Add white border around images</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="image-single-pdf" class="checkbox-input" checked>
+                    <label for="image-single-pdf">Combine all images into single PDF</label>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn" onclick="startConversion('image')">Convert to PDF</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Word to PDF Modal -->
+    <div class="modal" id="word-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title"><i class="fas fa-file-word"></i> Word to PDF Converter</h2>
+            
+            <div class="file-upload" onclick="document.getElementById('word-file').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload Word document (.doc, .docx) or drag and drop</p>
+                <small>Maximum file size: 25MB</small>
+                <input type="file" id="word-file" class="file-input" accept=".doc,.docx">
+            </div>
+            
+            <div class="options-section">
+                <h3 class="section-title"><i class="fas fa-cog"></i> Conversion Options</h3>
+                
+                <div class="option-group">
+                    <label class="option-label">Preserve Formatting</label>
+                    <select class="option-select">
+                        <option value="exact">Exact (as original)</option>
+                        <option value="optimized" selected>Optimized for PDF</option>
+                        <option value="minimal">Minimal (basic formatting)</option>
+                    </select>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="word-include-comments" class="checkbox-input">
+                    <label for="word-include-comments">Include comments and track changes</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="word-bookmarks" class="checkbox-input" checked>
+                    <label for="word-bookmarks">Create bookmarks from headings</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="word-hyperlinks" class="checkbox-input" checked>
+                    <label for="word-hyperlinks">Preserve hyperlinks</label>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn" onclick="startConversion('word')">Convert to PDF</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Excel to PDF Modal -->
+    <div class="modal" id="excel-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title"><i class="fas fa-file-excel"></i> Excel to PDF Converter</h2>
+            
+            <div class="file-upload" onclick="document.getElementById('excel-file').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload Excel file (.xls, .xlsx) or drag and drop</p>
+                <small>Maximum file size: 25MB</small>
+                <input type="file" id="excel-file" class="file-input" accept=".xls,.xlsx">
+            </div>
+            
+            <div class="options-section">
+                <h3 class="section-title"><i class="fas fa-cog"></i> Conversion Options</h3>
+                
+                <div class="option-group">
+                    <label class="option-label">Output Type</label>
+                    <select class="option-select">
+                        <option value="entire">Entire Workbook</option>
+                        <option value="active" selected>Active Sheet Only</option>
+                        <option value="selection">Current Selection</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">Page Orientation</label>
+                    <select class="option-select">
+                        <option value="auto">Auto</option>
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                    </select>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="excel-gridlines" class="checkbox-input" checked>
+                    <label for="excel-gridlines">Show gridlines</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="excel-headings" class="checkbox-input">
+                    <label for="excel-headings">Show row and column headings</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="excel-fit-to-page" class="checkbox-input" checked>
+                    <label for="excel-fit-to-page">Fit to page width</label>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn" onclick="startConversion('excel')">Convert to PDF</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PowerPoint to PDF Modal -->
+    <div class="modal" id="powerpoint-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title"><i class="fas fa-file-powerpoint"></i> PowerPoint to PDF Converter</h2>
+            
+            <div class="file-upload" onclick="document.getElementById('powerpoint-file').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload PowerPoint (.ppt, .pptx) or drag and drop</p>
+                <small>Maximum file size: 30MB</small>
+                <input type="file" id="powerpoint-file" class="file-input" accept=".ppt,.pptx">
+            </div>
+            
+            <div class="options-section">
+                <h3 class="section-title"><i class="fas fa-cog"></i> Conversion Options</h3>
+                
+                <div class="option-group">
+                    <label class="option-label">Slides Range</label>
+                    <input type="text" class="option-input" placeholder="e.g., 1-5, 8, 11-13 (leave blank for all)">
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">Slides Per Page</label>
+                    <select class="option-select">
+                        <option value="1">1 slide per page</option>
+                        <option value="2">2 slides per page</option>
+                        <option value="4" selected>4 slides per page</option>
+                        <option value="6">6 slides per page</option>
+                    </select>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="ppt-notes" class="checkbox-input">
+                    <label for="ppt-notes">Include speaker notes</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="ppt-transitions" class="checkbox-input">
+                    <label for="ppt-transitions">Preserve slide transitions</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="ppt-high-quality" class="checkbox-input" checked>
+                    <label for="ppt-high-quality">High quality (300 DPI)</label>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn" onclick="startConversion('powerpoint')">Convert to PDF</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="spinner"></div>
+        <h2 class="loading-text">Converting your file to PDF...</h2>
+        <div class="progress-bar">
+            <div class="progress" id="conversion-progress"></div>
+        </div>
+        <p>Please wait while we process your document</p>
+    </div>
+    
+    <!-- Result Modal -->
+    <div class="modal" id="result-modal">
+        <div class="modal-content result-modal">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="result-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="modal-title">Conversion Successful!</h2>
+            <p>Your PDF file is ready to download</p>
+            
+            <div class="download-options">
+                <a href="#" class="download-btn" id="download-pdf">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </a>
+                <a href="#" class="download-btn" id="save-drive">
+                    <i class="fab fa-google-drive"></i> Save to Google Drive
+                </a>
+                <a href="#" class="download-btn" id="save-dropbox">
+                    <i class="fab fa-dropbox"></i> Save to Dropbox
+                </a>
+                <a href="#" class="download-btn" id="email-pdf">
+                    <i class="fas fa-envelope"></i> Email PDF
+                </a>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <button class="btn btn-outline" onclick="closeModal(); document.getElementById('result-modal').style.display='none';">Convert Another File</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 Ultimate PDF Converter. All rights reserved.</p>
+        <p>100% Free Tool - No Hidden Costs</p>
+    </footer>
+    
+    <script>
+        // Open the appropriate modal based on conversion type
+        function openModal(type) {
+            closeModal(); // Close any open modals first
+            document.getElementById(type + '-modal').style.display = 'flex';
+        }
+        
+        // Close all modals
+        function closeModal() {
+            var modals = document.getElementsByClassName('modal');
+            for (var i = 0; i < modals.length; i++) {
+                modals[i].style.display = 'none';
+            }
+        }
+        
+        // Simulate file conversion process
+        function startConversion(type) {
+            // Show loading screen
+            document.getElementById('loading-screen').style.display = 'flex';
+            closeModal();
+            
+            // Simulate progress
+            var progress = 0;
+            var progressBar = document.getElementById('conversion-progress');
+            var interval = setInterval(function() {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    showResult();
+                }
+                progressBar.style.width = progress + '%';
+            }, 300);
+        }
+        
+        // Show conversion result
+        function showResult() {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('result-modal').style.display = 'flex';
+        }
+        
+        // Close modals when clicking outside content
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName('modal');
+            for (var i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+        
+        // Handle file selection display (for all file inputs)
+        document.querySelectorAll('.file-input').forEach(input => {
+            input.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    let fileName = this.files.length > 1 ? 
+                        this.files.length + ' files selected' : 
+                        this.files[0].name;
+                    
+                    let uploadBox = this.parentElement;
+                    uploadBox.querySelector('p').textContent = fileName;
+                    uploadBox.style.borderColor = '#4361ee';
+                    uploadBox.querySelector('i').className = 'fas fa-check-circle';
+                    uploadBox.querySelector('i').style.color = '#4cc9f0';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
