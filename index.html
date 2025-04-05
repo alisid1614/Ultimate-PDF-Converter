@@ -3,124 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium PDF Converter | Text, Image, Office to PDF</title>
+    <title>Premium PDF Converter</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Loading Animation -->
-    <div class="loader-wrapper">
-        <div class="loader">
-            <div class="loader-inner">
-                <div class="loader-line-wrap">
-                    <div class="loader-line"></div>
-                </div>
-                <div class="loader-line-wrap">
-                    <div class="loader-line"></div>
-                </div>
-                <div class="loader-line-wrap">
-                    <div class="loader-line"></div>
-                </div>
-                <div class="loader-line-wrap">
-                    <div class="loader-line"></div>
-                </div>
-                <div class="loader-line-wrap">
-                    <div class="loader-line"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3>Login to Your Account</h3>
-            <div class="modal-body">
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail">Email</label>
-                        <input type="email" id="loginEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" required>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn primary-btn">Login</button>
-                        <p>Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div class="modal" id="signupModal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3>Create New Account</h3>
-            <div class="modal-body">
-                <form id="signupForm">
-                    <div class="form-group">
-                        <label for="signupName">Full Name</label>
-                        <input type="text" id="signupName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupEmail">Email</label>
-                        <input type="email" id="signupEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPassword">Password</label>
-                        <input type="password" id="signupPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupConfirmPassword">Confirm Password</label>
-                        <input type="password" id="signupConfirmPassword" required>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn primary-btn">Sign Up</button>
-                        <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Container -->
     <div class="container">
-        <!-- Header -->
-        <header class="header">
+        <header>
             <div class="logo">
                 <i class="fas fa-file-pdf"></i>
                 <h1>Premium<span>PDF</span></h1>
             </div>
-            <nav class="navbar">
-                <ul>
-                    <li><a href="#" class="active">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#tools">Tools</a></li>
-                    <li><a href="#about">About</a></li>
-                </ul>
+            <nav>
+                <a href="login.html" class="btn login-btn">Login</a>
             </nav>
-            <div class="auth-buttons">
-                <button class="btn login-btn" id="headerLoginBtn">Login</button>
-                <button class="btn signup-btn" id="headerSignupBtn">Sign Up</button>
-                <div class="user-profile" id="userProfile" style="display: none;">
-                    <span id="usernameDisplay"></span>
-                    <button class="btn logout-btn" id="logoutBtn">Logout</button>
-                </div>
-            </div>
         </header>
 
-        <!-- Rest of your HTML content remains the same -->
-        <!-- ... -->
+        <main class="hero">
+            <div class="hero-content">
+                <h2>Convert, Edit, and Manage PDFs with Ease</h2>
+                <p>Your all-in-one solution for PDF conversion and editing. Fast, secure, and easy to use.</p>
+                <a href="tools.html" class="btn primary-btn">Get Started</a>
+            </div>
+            <div class="hero-image">
+                <img src="assets/pdf-conversion.png" alt="PDF Conversion">
+            </div>
+        </main>
 
+        <footer>
+            <p>&copy; 2023 PremiumPDF. All rights reserved.</p>
+        </footer>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="script.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>
