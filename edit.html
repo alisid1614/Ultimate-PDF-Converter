@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit PDF | Premium PDF</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <h1>Premium<span>PDF</span></h1>
+            </div>
+            <nav>
+                <span id="username">User</span>
+                <button id="logoutBtn" class="btn logout-btn">Logout</button>
+            </nav>
+        </header>
+
+        <main class="edit-page">
+            <div class="edit-header">
+                <h2>Edit Your PDF</h2>
+                <p>Customize your PDF before conversion</p>
+            </div>
+
+            <div class="edit-container">
+                <div class="edit-preview">
+                    <div class="preview-placeholder">
+                        <i class="fas fa-file-pdf"></i>
+                        <p>PDF preview will appear here</p>
+                    </div>
+                </div>
+
+                <div class="edit-options">
+                    <div class="option-section">
+                        <h3>Document Settings</h3>
+                        <div class="form-group">
+                            <label for="pageSize">Page Size:</label>
+                            <select id="pageSize">
+                                <option value="a4">A4</option>
+                                <option value="letter">Letter</option>
+                                <option value="legal">Legal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="orientation">Orientation:</label>
+                            <select id="orientation">
+                                <option value="portrait">Portrait</option>
+                                <option value="landscape">Landscape</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="margin">Margin:</label>
+                            <select id="margin">
+                                <option value="normal">Normal</option>
+                                <option value="narrow">Narrow</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="option-section">
+                        <h3>Security</h3>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="enablePassword">
+                            <label for="enablePassword">Password Protect</label>
+                        </div>
+                        <div class="form-group" id="passwordFields" style="display: none;">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password">
+                            <label for="confirmPassword">Confirm:</label>
+                            <input type="password" id="confirmPassword">
+                        </div>
+                    </div>
+
+                    <div class="edit-actions">
+                        <button id="backBtn" class="btn secondary-btn">Back</button>
+                        <button id="convertBtn" class="btn primary-btn">Convert & Download</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="auth.js"></script>
+    <script>
+        // Password toggle
+        document.getElementById('enablePassword').addEventListener('change', function() {
+            document.getElementById('passwordFields').style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Back button
+        document.getElementById('backBtn').addEventListener('click', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const toolType = urlParams.get('type');
+            window.location.href = `upload.html?type=${toolType}`;
+        });
+
+        // Convert button
+        document.getElementById('convertBtn').addEventListener('click', function() {
+            // In a real app, this would convert the file
+            // For now, redirect to download page
+            window.location.href = 'download.html';
+        });
+    </script>
+</body>
+</html>
