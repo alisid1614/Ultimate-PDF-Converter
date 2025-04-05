@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Files | Premium PDF</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <h1>Premium<span>PDF</span></h1>
+            </div>
+            <nav>
+                <span id="username">User</span>
+                <button id="logoutBtn" class="btn logout-btn">Logout</button>
+            </nav>
+        </header>
+
+        <main class="upload-page">
+            <div class="upload-header">
+                <h2 id="uploadTitle">Upload Files</h2>
+                <p id="uploadDescription">Select files to convert to PDF</p>
+            </div>
+
+            <div class="upload-area" id="dropArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <p class="file-msg">Drag & drop files here or click to browse</p>
+                <input type="file" id="fileInput" class="file-input" multiple>
+                <div class="upload-status" id="uploadStatus"></div>
+            </div>
+
+            <div class="upload-actions">
+                <button id="cancelBtn" class="btn secondary-btn">Cancel</button>
+                <button id="proceedBtn" class="btn primary-btn" disabled>Proceed to Edit</button>
+            </div>
+        </main>
+    </div>
+    <script src="auth.js"></script>
+    <script src="converter.js"></script>
+    <script>
+        // Get tool type from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const toolType = urlParams.get('type');
+        
+        // Update UI based on tool type
+        const toolTitles = {
+            'text': 'Text to PDF',
+            'image': 'Image to PDF',
+            'word': 'Word to PDF',
+            'excel': 'Excel to PDF',
+            'powerpoint': 'PowerPoint to PDF',
+            'merge': 'Merge PDFs'
+        };
+
+        const toolDescriptions = {
+            'text': 'Upload text files (.txt, .rtf) to convert to PDF',
+            'image': 'Upload images (.jpg, .png) to convert to PDF',
+            'word': 'Upload Word documents (.doc, .docx) to convert to PDF',
+            'excel': 'Upload Excel files (.xls, .xlsx) to convert to PDF',
+            'powerpoint': 'Upload PowerPoint files (.ppt, .pptx) to convert to PDF',
+            'merge': 'Upload multiple PDFs to merge into one file'
+        };
+
+        if (toolType && toolTitles[toolType]) {
+            document.getElementById('uploadTitle').textContent = toolTitles[toolType];
+            document.getElementById('uploadDescription').textContent = toolDescriptions[toolType];
+        }
+
+        // Set up file input based on tool type
+        const fileInput = document.getElementById('fileInput');
+        if (toolType === 'image') {
+            fileInput.accept = 'image/*';
+        } else if (toolType === 'word') {
+            fileInput.accept = '.doc,.docx';
+        } else if (toolType === 'excel') {
+            fileInput.accept = '.xls,.xlsx';
+        } else if (toolType === 'powerpoint') {
+            fileInput.accept = '.ppt,.pptx';
+        } else if (toolType === 'merge') {
+            fileInput.accept = '.pdf';
+        }
+
+        // Proceed button functionality
+        document.getElementById('proceedBtn').addEventListener('click', function() {
+            if (toolType) {
+                window.location.href = `edit.html?type=${toolType}`;
+            }
+        });
+    </script>
+</body>
+</html>
