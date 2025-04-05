@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download PDF | Premium PDF</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -34,7 +36,7 @@
                     </div>
                     <div class="file-details">
                         <h3 id="filename">converted_file.pdf</h3>
-                        <p id="filesize">2.4 MB • PDF Document</p>
+                        <p id="filesize">Calculating size...</p>
                     </div>
                 </div>
 
@@ -69,72 +71,157 @@
     </div>
     <script src="auth.js"></script>
     <script>
-        // Simulate a PDF blob (in a real app, this would come from the conversion process)
-        function generatePDFBlob() {
-            const pdfContent = `%PDF-1.4
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-3 0 obj
-<< /Type /Page /Parent 2 0 R /Resources << >> /Contents 4 0 R >>
-endobj
-4 0 obj
-<< /Length 44 >>
-stream
-BT /F1 12 Tf 72 720 Td (Hello World!) Tj ET
-endstream
-endobj
-xref
-0 5
-0000000000 65535 f 
-0000000010 00000 n 
-0000000079 00000 n 
-0000000178 00000 n 
-0000000306 00000 n 
-trailer
-<< /Size 5 /Root 1 0 R >>
-startxref
-396
-%%EOF`;
-            return new Blob([pdfContent], { type: 'application/pdf' });
-        }
-
-        // Get the converted file info (in a real app, this would come from your conversion process)
-        const convertedFile = {
-            name: "converted_file.pdf",
-            size: "2.4 MB",
-            blob: generatePDFBlob()
+        // Get the original filename from session storage
+        const fileInfo = JSON.parse(sessionStorage.getItem('uploadedFileInfo')) || {
+            originalName: 'document',
+            type: 'text'
         };
 
-        // Set file info in the UI
-        document.getElementById('filename').textContent = convertedFile.name;
-        document.getElementById('filesize').textContent = convertedFile.size + " • PDF Document";
+        // Generate PDF with the original filename and content
+        async function createConvertedPDF() {
+            try {
+                // Create a new PDF document
+                const { PDFDocument, rgb } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage([550, 750]);
+                
+                // Get the original filename without extension
+                const originalName = fileInfo.originalName.replace(/\.[^/.]+$/, "");
+                
+                // Add content to the PDF based on file type
+                switch(fileInfo.type) {
+                    case 'text':
+                        page.drawText(`Converted from text file: ${originalName}`, {
+                            x: 50,
+                            y: 700,
+                            size: 20,
+                            color: rgb(0, 0, 0),
+                        });
+                        page.drawText(`Original content would appear here`, {
+                            x: 50,
+                            y: 650,
+                            size: 14,
+                            color: rgb(0, 0, 0),
+                        });
+                        break;
+                    case 'image':
+                        page.drawText(`Converted from image: ${originalName}`, {
+                            x: 50,
+                            y: 700,
+                            size: 20,
+                            color: rgb(0, 0, 0),
+                        });
+                        page.drawText(`[Image would appear here]`, {
+                            x: 50,
+                            y: 650,
+                            size: 14,
+                            color: rgb(0, 0, 0),
+                        });
+                        break;
+                    case 'word':
+                        page.drawText(`Converted from Word document: ${originalName}`, {
+                            x: 50,
+                            y: 700,
+                            size: 20,
+                            color: rgb(0, 0, 0),
+                        });
+                        page.drawText(`Document content would appear here`, {
+                            x: 50,
+                            y: 650,
+                            size: 14,
+                            color: rgb(0, 0, 0),
+                        });
+                        break;
+                    case 'excel':
+                        page.drawText(`Converted from Excel file: ${originalName}`, {
+                            x: 50,
+                            y: 700,
+                            size: 20,
+                            color: rgb(0, 0, 0),
+                        });
+                        page.drawText(`Table data would appear here`, {
+                            x: 50,
+                            y: 650,
+                            size: 14,
+                            color: rgb(0, 0, 0),
+                        });
+                        break;
+                    case 'powerpoint':
+                        page.drawText(`Converted from PowerPoint: ${originalName}`, {
+                            x: 50,
+                            y: 700,
+                            size: 20,
+                            color: rgb(0, 0, 0),
+                        });
+                        page.drawText(`Slide content would appear here`, {
+                            x: 50,
+                            y: 650,
+                            size: 14,
+                            color: rgb(0, 0, 0),
+                        });
+                        break;
+                    default:
+                        page.drawText(`Converted file: ${originalName}`, {
+                            x: 50,
+                            y: 700,
+                            size: 20,
+                            color: rgb(0, 0, 0),
+                        });
+                }
 
-        // Download button functionality
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            saveAs(convertedFile.blob, convertedFile.name);
-            showToast('Download started');
-        });
+                // Add metadata
+                pdfDoc.setTitle(`Converted from ${fileInfo.originalName}`);
+                pdfDoc.setAuthor("PremiumPDF Converter");
+                
+                // Save the PDF
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                
+                // Set the converted filename
+                const convertedName = `${originalName}_converted.pdf`;
+                
+                return {
+                    name: convertedName,
+                    blob: blob,
+                    size: (blob.size / 1024 / 1024).toFixed(2) + ' MB'
+                };
+            } catch (error) {
+                console.error('Error creating PDF:', error);
+                throw error;
+            }
+        }
 
-        // Email button functionality
-        document.getElementById('emailBtn').addEventListener('click', function() {
-            showToast('Email option would open your mail client in a real app');
-            // In a real app: window.location.href = `mailto:?subject=Your PDF File&body=Here's your converted PDF&attachment=${convertedFile.blob}`;
-        });
+        // When page loads, create the PDF and update UI
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const convertedFile = await createConvertedPDF();
+                
+                // Update UI with file info
+                document.getElementById('filename').textContent = convertedFile.name;
+                document.getElementById('filesize').textContent = convertedFile.size + ' • PDF Document';
+                
+                // Download button functionality
+                document.getElementById('downloadBtn').addEventListener('click', function() {
+                    saveAs(convertedFile.blob, convertedFile.name);
+                    showToast('Download started');
+                });
 
-        // Google Drive button functionality
-        document.getElementById('driveBtn').addEventListener('click', function() {
-            showToast('Google Drive integration would happen here in a real app');
-            // In a real app, you would use Google Drive API
-        });
+                // Other buttons (simulated)
+                document.getElementById('emailBtn').addEventListener('click', function() {
+                    showToast('Email option would open your mail client');
+                });
 
-        // Dropbox button functionality
-        document.getElementById('dropboxBtn').addEventListener('click', function() {
-            showToast('Dropbox integration would happen here in a real app');
-            // In a real app, you would use Dropbox API
+                document.getElementById('driveBtn').addEventListener('click', function() {
+                    showToast('Google Drive integration would happen here');
+                });
+
+                document.getElementById('dropboxBtn').addEventListener('click', function() {
+                    showToast('Dropbox integration would happen here');
+                });
+            } catch (error) {
+                showToast('Error creating PDF file', 'error');
+                console.error('PDF creation error:', error);
+            }
         });
 
         // Toast notification function
