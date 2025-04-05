@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Download PDF | Premium PDF</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -32,8 +33,8 @@
                         <i class="fas fa-file-pdf"></i>
                     </div>
                     <div class="file-details">
-                        <h3>converted_file.pdf</h3>
-                        <p>2.4 MB • PDF Document</p>
+                        <h3 id="filename">converted_file.pdf</h3>
+                        <p id="filesize">2.4 MB • PDF Document</p>
                     </div>
                 </div>
 
@@ -44,15 +45,15 @@
                             <i class="fas fa-download"></i>
                             <span>Download</span>
                         </button>
-                        <button class="option-btn">
+                        <button class="option-btn" id="emailBtn">
                             <i class="fas fa-envelope"></i>
                             <span>Email</span>
                         </button>
-                        <button class="option-btn">
+                        <button class="option-btn" id="driveBtn">
                             <i class="fab fa-google-drive"></i>
                             <span>Google Drive</span>
                         </button>
-                        <button class="option-btn">
+                        <button class="option-btn" id="dropboxBtn">
                             <i class="fab fa-dropbox"></i>
                             <span>Dropbox</span>
                         </button>
@@ -68,11 +69,92 @@
     </div>
     <script src="auth.js"></script>
     <script>
+        // Simulate a PDF blob (in a real app, this would come from the conversion process)
+        function generatePDFBlob() {
+            const pdfContent = `%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /Resources << >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 44 >>
+stream
+BT /F1 12 Tf 72 720 Td (Hello World!) Tj ET
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000010 00000 n 
+0000000079 00000 n 
+0000000178 00000 n 
+0000000306 00000 n 
+trailer
+<< /Size 5 /Root 1 0 R >>
+startxref
+396
+%%EOF`;
+            return new Blob([pdfContent], { type: 'application/pdf' });
+        }
+
+        // Get the converted file info (in a real app, this would come from your conversion process)
+        const convertedFile = {
+            name: "converted_file.pdf",
+            size: "2.4 MB",
+            blob: generatePDFBlob()
+        };
+
+        // Set file info in the UI
+        document.getElementById('filename').textContent = convertedFile.name;
+        document.getElementById('filesize').textContent = convertedFile.size + " • PDF Document";
+
         // Download button functionality
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            // In a real app, this would download the file
-            alert('Download would start here in a real application');
+            saveAs(convertedFile.blob, convertedFile.name);
+            showToast('Download started');
         });
+
+        // Email button functionality
+        document.getElementById('emailBtn').addEventListener('click', function() {
+            showToast('Email option would open your mail client in a real app');
+            // In a real app: window.location.href = `mailto:?subject=Your PDF File&body=Here's your converted PDF&attachment=${convertedFile.blob}`;
+        });
+
+        // Google Drive button functionality
+        document.getElementById('driveBtn').addEventListener('click', function() {
+            showToast('Google Drive integration would happen here in a real app');
+            // In a real app, you would use Google Drive API
+        });
+
+        // Dropbox button functionality
+        document.getElementById('dropboxBtn').addEventListener('click', function() {
+            showToast('Dropbox integration would happen here in a real app');
+            // In a real app, you would use Dropbox API
+        });
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
     </script>
 </body>
 </html>
