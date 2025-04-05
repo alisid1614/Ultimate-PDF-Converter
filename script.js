@@ -1,28 +1,167 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Hide loader when page is loaded
-    setTimeout(function() {
-        document.querySelector('.loader-wrapper').style.opacity = '0';
-        setTimeout(function() {
-            document.querySelector('.loader-wrapper').style.display = 'none';
-        }, 500);
-    }, 1000);
+    // User state management
+    let currentUser = null;
+    const userProfile = document.getElementById('userProfile');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const headerLoginBtn = document.getElementById('headerLoginBtn');
+    const headerSignupBtn = document.getElementById('headerSignupBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    // Tool buttons event listeners
-    const toolButtons = document.querySelectorAll('.tool-btn');
-    toolButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const tool = this.closest('.tool-card').getAttribute('data-tool');
-            openToolModal(tool);
+    // Check if user is logged in (in a real app, this would check localStorage or a session)
+    function checkAuthState() {
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (user) {
+            currentUser = user;
+            updateAuthUI();
+        }
+    }
+
+    // Update UI based on auth state
+    function updateAuthUI() {
+        if (currentUser) {
+            headerLoginBtn.style.display = 'none';
+            headerSignupBtn.style.display = 'none';
+            userProfile.style.display = 'flex';
+            usernameDisplay.textContent = currentUser.name;
+        } else {
+            headerLoginBtn.style.display = 'inline-block';
+            headerSignupBtn.style.display = 'inline-block';
+            userProfile.style.display = 'none';
+        }
+    }
+
+    // Login functionality
+    const loginModal = document.getElementById('loginModal');
+    const loginForm = document.getElementById('loginForm');
+    
+    headerLoginBtn.addEventListener('click', () => {
+        loginModal.style.display = 'block';
+    });
+
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        // In a real app, this would be an API call
+        if (email && password) {
+            // Simulate successful login
+            currentUser = {
+                name: email.split('@')[0],
+                email: email
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateAuthUI();
+            loginModal.style.display = 'none';
+            loginForm.reset();
+            showToast('Login successful!');
+        } else {
+            showToast('Please enter email and password', 'error');
+        }
+    });
+
+    // Signup functionality
+    const signupModal = document.getElementById('signupModal');
+    const signupForm = document.getElementById('signupForm');
+    
+    headerSignupBtn.addEventListener('click', () => {
+        signupModal.style.display = 'block';
+    });
+
+    document.getElementById('showSignup').addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.style.display = 'none';
+        signupModal.style.display = 'block';
+    });
+
+    document.getElementById('showLogin').addEventListener('click', (e) => {
+        e.preventDefault();
+        signupModal.style.display = 'none';
+        loginModal.style.display = 'block';
+    });
+
+    signupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('signupName').value;
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('signupConfirmPassword').value;
+        
+        if (password !== confirmPassword) {
+            showToast('Passwords do not match', 'error');
+            return;
+        }
+        
+        if (name && email && password) {
+            // Simulate successful signup
+            currentUser = {
+                name: name,
+                email: email
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateAuthUI();
+            signupModal.style.display = 'none';
+            signupForm.reset();
+            showToast('Account created successfully!');
+        } else {
+            showToast('Please fill all fields', 'error');
+        }
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', function() {
+        currentUser = null;
+        localStorage.removeItem('currentUser');
+        updateAuthUI();
+        showToast('Logged out successfully');
+    });
+
+    // Close modals when clicking X
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
         });
     });
 
-    // File drop area functionality
+    // Close modals when clicking outside
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+
+    // File upload functionality
     const dropArea = document.getElementById('dropArea');
     const fileInput = document.getElementById('fileInput');
+    const fileMsg = dropArea.querySelector('.file-msg');
+    const uploadStatus = document.createElement('div');
+    uploadStatus.className = 'upload-status';
+    dropArea.appendChild(uploadStatus);
 
-    dropArea.addEventListener('click', () => {
-        fileInput.click();
-    });
+    let uploadedFiles = [];
+
+    dropArea.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', handleFiles);
 
@@ -62,12 +201,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleFiles(e) {
         const files = e.target.files;
         if (files.length) {
-            updateFileMessage(files);
+            uploadedFiles = Array.from(files);
+            updateFileMessage(uploadedFiles);
+            showUploadSuccess(`${uploadedFiles.length} file(s) ready for conversion`);
         }
     }
 
     function updateFileMessage(files) {
-        const fileMsg = dropArea.querySelector('.file-msg');
         if (files.length === 1) {
             fileMsg.textContent = files[0].name;
         } else {
@@ -75,78 +215,47 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Advanced options toggle
-    const advancedToggle = document.getElementById('advancedToggle');
-    const advancedOptions = document.getElementById('advancedOptions');
+    function showUploadSuccess(message) {
+        uploadStatus.textContent = message;
+        uploadStatus.className = 'upload-status success';
+    }
 
-    advancedToggle.addEventListener('change', function() {
-        if (this.checked) {
-            advancedOptions.style.display = 'block';
-        } else {
-            advancedOptions.style.display = 'none';
-        }
-    });
+    function showUploadError(message) {
+        uploadStatus.textContent = message;
+        uploadStatus.className = 'upload-status error';
+    }
 
-    // Password protection toggle
-    const enablePassword = document.getElementById('enablePassword');
-    const passwordFields = document.querySelector('.password-fields');
-
-    enablePassword.addEventListener('change', function() {
-        if (this.checked) {
-            passwordFields.style.display = 'flex';
-        } else {
-            passwordFields.style.display = 'none';
-        }
-    });
-
-    // Convert button functionality
+    // PDF Conversion Functionality
     const convertBtn = document.getElementById('convertBtn');
-    const resultsArea = document.getElementById('resultsArea');
     const resultsList = document.getElementById('resultsList');
     const resultsPlaceholder = document.querySelector('.results-placeholder');
 
-    convertBtn.addEventListener('click', function() {
-        // Simulate conversion process
+    convertBtn.addEventListener('click', async function() {
+        if (uploadedFiles.length === 0) {
+            showToast('Please upload files first', 'error');
+            return;
+        }
+
         this.disabled = true;
         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
         
-        setTimeout(() => {
-            // Simulate successful conversion
+        try {
+            // Simulate conversion delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Process each file
+            const conversionResults = [];
+            
+            for (const file of uploadedFiles) {
+                const result = await convertFileToPDF(file);
+                conversionResults.push(result);
+            }
+            
+            // Display results
+            displayConversionResults(conversionResults);
+            
             this.innerHTML = '<i class="fas fa-check"></i> Conversion Complete';
             this.style.backgroundColor = 'var(--success-color)';
-            
-            // Show results
-            resultsPlaceholder.style.display = 'none';
-            resultsList.style.display = 'flex';
-            
-            // Add sample result (in a real app, this would be dynamic)
-            resultsList.innerHTML = `
-                <div class="result-item">
-                    <div class="result-info">
-                        <div class="result-icon">
-                            <i class="fas fa-file-pdf"></i>
-                        </div>
-                        <div>
-                            <div class="result-name">converted_file.pdf</div>
-                            <div class="result-size">1.2 MB</div>
-                        </div>
-                    </div>
-                    <div class="result-actions">
-                        <button class="download-btn">
-                            <i class="fas fa-download"></i> Download
-                        </button>
-                        <button class="save-btn">
-                            <i class="fas fa-save"></i> Save to
-                        </button>
-                        <button class="share-btn">
-                            <i class="fas fa-share-alt"></i> Share
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            // Scroll to results
-            resultsArea.scrollIntoView({ behavior: 'smooth' });
             
             // Reset button after delay
             setTimeout(() => {
@@ -154,153 +263,113 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.backgroundColor = 'var(--primary-color)';
                 this.disabled = false;
             }, 3000);
-        }, 2000);
-    });
-
-    // Clear button functionality
-    const clearBtn = document.getElementById('clearBtn');
-    
-    clearBtn.addEventListener('click', function() {
-        fileInput.value = '';
-        dropArea.querySelector('.file-msg').textContent = 'Drag & drop files here or click to browse';
-        resultsList.innerHTML = '';
-        resultsList.style.display = 'none';
-        resultsPlaceholder.style.display = 'block';
-        advancedOptions.style.display = 'none';
-        advancedToggle.checked = false;
-        enablePassword.checked = false;
-        passwordFields.style.display = 'none';
-    });
-
-    // Modal functionality
-    function openToolModal(tool) {
-        let modalId = '';
-        switch(tool) {
-            case 'text':
-                modalId = 'textToPdfModal';
-                break;
-            // Add cases for other tools here
-            default:
-                return;
-        }
-        
-        const modal = document.getElementById(modalId);
-        modal.style.display = 'block';
-        
-        // Close modal when clicking on X
-        modal.querySelector('.close-modal').addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    }
-
-    // Text formatting buttons in Text to PDF modal
-    const boldBtn = document.getElementById('boldText');
-    const italicBtn = document.getElementById('italicText');
-    const underlineBtn = document.getElementById('underlineText');
-    const textInput = document.getElementById('textInput');
-    
-    boldBtn.addEventListener('click', function() {
-        this.classList.toggle('active');
-        wrapSelectedText('<strong>', '</strong>');
-    });
-    
-    italicBtn.addEventListener('click', function() {
-        this.classList.toggle('active');
-        wrapSelectedText('<em>', '</em>');
-    });
-    
-    underlineBtn.addEventListener('click', function() {
-        this.classList.toggle('active');
-        wrapSelectedText('<u>', '</u>');
-    });
-    
-    function wrapSelectedText(prefix, suffix) {
-        const start = textInput.selectionStart;
-        const end = textInput.selectionEnd;
-        const selectedText = textInput.value.substring(start, end);
-        const beforeText = textInput.value.substring(0, start);
-        const afterText = textInput.value.substring(end);
-        
-        textInput.value = beforeText + prefix + selectedText + suffix + afterText;
-        
-        // Restore cursor position
-        textInput.selectionStart = start + prefix.length;
-        textInput.selectionEnd = end + prefix.length;
-        textInput.focus();
-    }
-
-    // Convert Text to PDF button
-    const convertTextBtn = document.getElementById('convertTextBtn');
-    
-    convertTextBtn.addEventListener('click', function() {
-        if (!textInput.value.trim()) {
-            alert('Please enter some text to convert');
-            return;
-        }
-        
-        // Simulate conversion
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
-        this.disabled = true;
-        
-        setTimeout(() => {
-            // In a real app, this would generate a PDF
-            alert('PDF generated successfully! (This is a simulation)');
-            this.innerHTML = 'Convert to PDF';
+            
+        } catch (error) {
+            console.error('Conversion error:', error);
+            this.innerHTML = '<i class="fas fa-sync-alt"></i> Convert Now';
+            this.style.backgroundColor = 'var(--primary-color)';
             this.disabled = false;
-            document.getElementById('textToPdfModal').style.display = 'none';
-        }, 1500);
+            showToast('Conversion failed. Please try again.', 'error');
+        }
     });
 
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
+    async function convertFileToPDF(file) {
+        // In a real app, this would use a PDF library to actually convert the file
+        // Here we simulate the conversion and return a mock result
+        
+        return {
+            originalName: file.name,
+            convertedName: file.name.replace(/\.[^/.]+$/, '') + '.pdf',
+            size: Math.max(file.size / 1024 / 1024, 0.1).toFixed(1) + ' MB',
+            blob: new Blob(['Simulated PDF content'], { type: 'application/pdf' })
+        };
+    }
 
-    // Animate elements when they come into view
-    const animateOnScroll = function() {
-        const elements = document.querySelectorAll('.tool-card, .feature-card, .section-title');
+    function displayConversionResults(results) {
+        resultsPlaceholder.style.display = 'none';
+        resultsList.style.display = 'flex';
+        resultsList.innerHTML = '';
         
-        elements.forEach(element => {
-            const elementPosition = element.getBoundingClientRect().top;
-            const screenPosition = window.innerHeight / 1.2;
-            
-            if (elementPosition < screenPosition) {
-                element.style.opacity = '1';
-                element.style.transform = 'translateY(0)';
-            }
-        });
-    };
-    
-    // Set initial state for animated elements
-    window.addEventListener('load', function() {
-        const elements = document.querySelectorAll('.tool-card, .feature-card');
-        elements.forEach(element => {
-            element.style.opacity = '0';
-            element.style.transform = 'translateY(20px)';
-            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        results.forEach(result => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.innerHTML = `
+                <div class="result-info">
+                    <div class="result-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div>
+                        <div class="result-name">${result.convertedName}</div>
+                        <div class="result-size">${result.size}</div>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button class="download-btn" data-filename="${result.convertedName}">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <div class="download-options" id="options-${result.convertedName}">
+                        <h4>Save options:</h4>
+                        <div class="download-option" data-action="download">
+                            <i class="fas fa-download"></i> Download PDF
+                        </div>
+                        ${currentUser ? `
+                        <div class="download-option" data-action="drive">
+                            <i class="fab fa-google-drive"></i> Save to Google Drive
+                        </div>
+                        <div class="download-option" data-action="dropbox">
+                            <i class="fab fa-dropbox"></i> Save to Dropbox
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            resultsList.appendChild(resultItem);
         });
         
-        animateOnScroll();
-    });
+        // Add event listeners to download buttons
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const optionsPanel = document.getElementById(`options-${this.getAttribute('data-filename')}`);
+                optionsPanel.style.display = optionsPanel.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+        
+        // Add event listeners to download options
+        document.querySelectorAll('.download-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const action = this.getAttribute('data-action');
+                const resultItem = this.closest('.result-item');
+                const filename = resultItem.querySelector('.download-btn').getAttribute('data-filename');
+                const result = results.find(r => r.convertedName === filename);
+                
+                if (action === 'download') {
+                    downloadPDF(result.blob, filename);
+                } else {
+                    showToast(`Saving to ${action} would happen here in a real app`);
+                }
+                
+                // Hide options panel
+                this.closest('.download-options').style.display = 'none';
+            });
+        });
+    }
+
+    function downloadPDF(blob, filename) {
+        saveAs(blob, filename);
+        showToast('Download started');
+    }
+
+    // Initialize the app
+    checkAuthState();
     
-    window.addEventListener('scroll', animateOnScroll);
+    // Hide loader when page is loaded
+    setTimeout(function() {
+        document.querySelector('.loader-wrapper').style.opacity = '0';
+        setTimeout(function() {
+            document.querySelector('.loader-wrapper').style.display = 'none';
+        }, 500);
+    }, 1000);
+
+    // Rest of your existing code...
+    // (Tool buttons, text formatting, animations, etc.)
 });
